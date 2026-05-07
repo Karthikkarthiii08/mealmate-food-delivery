@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants – MealMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'delivery/theme.css' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; min-height: 100vh; background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600') center/cover fixed; padding: 40px 20px; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 0; }
+        .container { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; }
+        h1 { color: #fff; font-size: 2rem; font-weight: 700; margin-bottom: 24px; text-align: center; }
+        .table-wrap { background: var(--surface); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px var(--shadow-lg); }
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { background: var(--orange); }
+        thead th { padding: 16px 18px; color: #fff; font-weight: 600; font-size: 0.9rem; text-align: left; }
+        tbody tr { border-bottom: 1px solid var(--border-light); transition: background 0.15s; }
+        tbody tr:hover { background: var(--table-row-hover); }
+        tbody td { padding: 14px 18px; font-size: 0.9rem; color: var(--text-primary); vertical-align: middle; }
+        tbody td img { width: 70px; height: 55px; object-fit: cover; border-radius: 8px; }
+        .ops { display: flex; flex-wrap: wrap; gap: 8px; }
+        .btn-op { padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; text-decoration: none; transition: opacity 0.2s; }
+        .btn-op:hover { opacity: 0.8; }
+        .btn-update { background: #e3f2fd; color: #1565c0; }
+        .btn-delete { background: var(--red-bg); color: var(--red); }
+        .btn-menu { background: var(--green-bg); color: var(--green); }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #fff; text-decoration: none; font-weight: 600; font-size: 0.9rem; opacity: 0.85; }
+        .back-btn:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h1>🍽️ Restaurants</h1>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Restaurant Name</th>
+                        <th>Picture</th>
+                        <th>Cuisine</th>
+                        <th>Rating</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in restaurantList %}
+                    <tr>
+                        <td><strong>{{ r.name }}</strong></td>
+                        <td><img src="{{ r.picture }}" alt="{{ r.name }}"></td>
+                        <td>{{ r.cuisine }}</td>
+                        <td>⭐ {{ r.rating }}</td>
+                        <td>
+                            <div class="ops">
+                                <a href="{% url 'open_update_restaurant' r.id %}" class="btn-op btn-update">Update Info</a>
+                                <a href="{% url 'delete_restaurant' r.id %}" class="btn-op btn-delete">Delete</a>
+                                <a href="{% url 'open_update_menu' r.id %}" class="btn-op btn-menu">Update Menu</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <script>
+        function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙'; }
+        function toggleTheme() { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; localStorage.setItem('mb-theme', t); applyTheme(t); }
+        applyTheme(localStorage.getItem('mb-theme') || 'light');
+    </script>
+</body>
+</html>

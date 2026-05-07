@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart – MealMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'delivery/theme.css' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); min-height: 100vh; }
+        .navbar { background: var(--navbar-bg); padding: 16px 40px; display: flex; align-items: center; box-shadow: 0 2px 10px var(--shadow); }
+        .navbar .logo { font-size: 1.4rem; font-weight: 800; color: var(--orange); }
+        .container { max-width: 750px; margin: 40px auto; padding: 0 20px; }
+        h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; }
+        .cart-card { background: var(--surface); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px var(--shadow); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { background: var(--orange); }
+        thead th { padding: 14px 18px; color: #fff; font-weight: 600; font-size: 0.88rem; text-align: left; }
+        tbody tr { border-bottom: 1px solid var(--border-light); }
+        tbody tr:last-child { border-bottom: none; }
+        tbody td { padding: 14px 18px; font-size: 0.88rem; color: var(--text-primary); vertical-align: middle; }
+        tbody td img { width: 60px; height: 50px; object-fit: cover; border-radius: 8px; }
+        .btn-remove { padding: 6px 14px; background: var(--red-bg); color: var(--red); border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background 0.2s; }
+        .btn-remove:hover { background: var(--red); color: #fff; }
+        .total-row { background: var(--surface); border-radius: 14px; padding: 20px 24px; box-shadow: 0 4px 20px var(--shadow); display: flex; align-items: center; justify-content: space-between; }
+        .total-row .label { font-size: 1rem; font-weight: 600; color: var(--text-secondary); }
+        .total-row .amount { font-size: 1.4rem; font-weight: 800; color: var(--orange); }
+        .btn-checkout { display: block; text-align: center; margin-top: 20px; padding: 15px; background: var(--orange); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+        .btn-checkout:hover { background: var(--orange-dark); transform: translateY(-2px); }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--text-muted); font-size: 0.85rem; text-decoration: none; font-weight: 600; }
+        .back-link:hover { color: var(--orange); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🍔 MealMate</div>
+    </nav>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">← Back to Menu</a>
+        <h2>🛒 Your Cart, {{ username }}</h2>
+        <div class="cart-card">
+            <table>
+                <thead>
+                    <tr><th>Image</th><th>Name</th><th>Description</th><th>Price</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in itemList %}
+                    <tr>
+                        <td><img src="{{ item.picture }}" alt="{{ item.name }}"></td>
+                        <td><strong>{{ item.name }}</strong></td>
+                        <td>{{ item.description }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td><a href="{% url 'remove_from_cart' item.id username %}" class="btn-remove">✕ Remove</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="total-row">
+            <span class="label">Total Amount</span>
+            <span class="amount">₹{{ total_price }}</span>
+        </div>
+        <a href="{% url 'checkout' username %}" class="btn-checkout">PROCEED TO CHECKOUT</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <script>
+        function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙'; }
+        function toggleTheme() { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; localStorage.setItem('mb-theme', t); applyTheme(t); }
+        applyTheme(localStorage.getItem('mb-theme') || 'light');
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MealMate 🍔</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'delivery/theme.css' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); }
+        .hero { position: relative; z-index: 1; text-align: center; color: #fff; padding: 40px 20px; }
+        .hero h1 { font-size: 3.2rem; font-weight: 800; letter-spacing: 1px; text-shadow: 0 2px 12px rgba(0,0,0,0.4); margin-bottom: 12px; }
+        .hero p { font-size: 1.15rem; margin-bottom: 40px; opacity: 0.9; }
+        .btn-group { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+        .btn { display: inline-block; padding: 14px 60px; border-radius: 50px; font-size: 1rem; font-weight: 700; letter-spacing: 1px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .btn-primary { background: #ff5252; color: #fff; }
+        .btn-secondary { background: rgba(255,255,255,0.15); color: #fff; border: 2px solid rgba(255,255,255,0.6); backdrop-filter: blur(6px); }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="hero">
+        <h1>MealMate 🥪</h1>
+        <p>Where you find your food based on your cravings! 🍔</p>
+        <div class="btn-group">
+            <a href="open_signup" class="btn btn-primary">SIGN UP</a>
+            <a href="open_signin" class="btn btn-secondary">SIGN IN</a>
+        </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <script>
+        function applyTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙';
+        }
+        function toggleTheme() {
+            const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('mb-theme', t); applyTheme(t);
+        }
+        applyTheme(localStorage.getItem('mb-theme') || 'light');
+    </script>
+</body>
+</html>

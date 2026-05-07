@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up – MealMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'delivery/theme.css' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; min-height: 100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+        .card { display: flex; width: 820px; max-width: 95vw; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px var(--shadow-lg); background: var(--surface); }
+        .card-image { flex: 1; background: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800') center/cover no-repeat; position: relative; min-height: 500px; }
+        .card-image-overlay { position: absolute; inset: 0; background: var(--card-img-overlay); display: flex; flex-direction: column; justify-content: flex-end; padding: 30px; }
+        .card-image-overlay h2 { color: #fff; font-size: 2rem; font-weight: 700; }
+        .card-image-overlay p { color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 6px; }
+        .card-form { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .card-form h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+        .card-form .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+        label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="password"], input[type="email"], textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: 'Poppins', sans-serif; outline: none; transition: border 0.2s; margin-bottom: 16px; background: var(--input-bg); color: var(--text-primary); }
+        textarea { resize: vertical; min-height: 70px; }
+        input:focus, textarea:focus { border-color: var(--orange); }
+        .btn-submit { width: 100%; padding: 13px; background: var(--orange); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: var(--orange-dark); }
+        .signin-link { text-align: center; margin-top: 14px; font-size: 0.85rem; color: var(--text-muted); }
+        .signin-link a { color: var(--orange); font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-image">
+            <div class="card-image-overlay">
+                <h2>MealMate</h2>
+                <p>Join us and satisfy your cravings!</p>
+            </div>
+        </div>
+        <div class="card-form">
+            <h1>SIGN UP</h1>
+            <p class="subtitle">Create your account to get started.</p>
+            <form action="{% url 'signup' %}" method="post">
+                {% csrf_token %}
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Choose a username">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Create a password">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Enter your email">
+                <label>Mobile</label>
+                <input type="text" name="mobile" placeholder="Enter your mobile number">
+                <label>Address</label>
+                <textarea name="address" placeholder="Enter your delivery address"></textarea>
+                <button type="submit" class="btn-submit">SIGN UP</button>
+            </form>
+            <p class="signin-link">Already have an account? <a href="open_signin">Sign In</a></p>
+        </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <script>
+        function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙'; }
+        function toggleTheme() { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; localStorage.setItem('mb-theme', t); applyTheme(t); }
+        applyTheme(localStorage.getItem('mb-theme') || 'light');
+    </script>
+</body>
+</html>

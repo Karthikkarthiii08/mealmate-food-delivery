@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Menu – MealMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'delivery/theme.css' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h2 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 20px; }
+        .table-wrap { background: var(--surface); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px var(--shadow); margin-bottom: 36px; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        thead tr { background: var(--orange); }
+        thead th { padding: 14px 16px; color: #fff; font-weight: 600; font-size: 0.85rem; text-align: left; white-space: nowrap; }
+        thead th:nth-child(1) { width: 160px; }
+        thead th:nth-child(2) { width: 90px; }
+        thead th:nth-child(3) { width: auto; }
+        thead th:nth-child(4) { width: 90px; }
+        thead th:nth-child(5) { width: 100px; }
+        thead th:nth-child(6) { width: 90px; }
+        tbody tr { border-bottom: 1px solid var(--border-light); }
+        tbody td { padding: 14px 16px; font-size: 0.85rem; color: var(--text-primary); vertical-align: middle; }
+        tbody td:nth-child(1) { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        tbody td img { width: 60px; height: 50px; object-fit: cover; border-radius: 8px; display: block; }
+        .veg-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; white-space: nowrap; display: inline-block; }
+        .veg { background: var(--green-bg); color: var(--green); }
+        .non-veg { background: var(--red-bg); color: var(--red); }
+        .btn-delete { font-size: 0.78rem; padding: 6px 14px; border-radius: 6px; background: var(--red-bg); color: var(--red); font-weight: 600; text-decoration: none; white-space: nowrap; display: inline-block; transition: opacity 0.2s; }
+        .btn-delete:hover { opacity: 0.75; }
+        .form-card { background: var(--surface); border-radius: 14px; padding: 30px; box-shadow: 0 4px 20px var(--shadow); }
+        .form-card h2 { margin-bottom: 22px; }
+        label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 6px; }
+        input[type="text"], input[type="number"], input[type="url"], textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.88rem; font-family: 'Poppins', sans-serif; outline: none; transition: border 0.2s; margin-bottom: 16px; background: var(--input-bg); color: var(--text-primary); }
+        input:focus, textarea:focus { border-color: var(--orange); }
+        textarea { resize: vertical; min-height: 70px; }
+        .checkbox-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .checkbox-row input { width: auto; margin: 0; }
+        .checkbox-row label { margin: 0; font-size: 0.9rem; }
+        .btn-submit { width: 100%; padding: 13px; background: var(--orange); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: var(--orange-dark); }
+        .back { display: inline-block; margin-bottom: 20px; color: var(--text-muted); font-size: 0.85rem; text-decoration: none; }
+        .back:hover { color: var(--orange); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back">← Back</a>
+        <h2>📋 Current Menu</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Item Name</th><th>Picture</th><th>Description</th><th>Price</th><th>Veg?</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in itemList %}
+                    <tr>
+                        <td><strong>{{ item.name }}</strong></td>
+                        <td><img src="{{ item.picture }}" alt="{{ item.name }}"></td>
+                        <td>{{ item.description }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td><span class="veg-badge {% if item.vegeterian %}veg{% else %}non-veg{% endif %}">{% if item.vegeterian %}🟢 Veg{% else %}🔴 Non-Veg{% endif %}</span></td>
+                        <td><a href="{% url 'delete_menu_item' item.id restaurant.id %}" class="btn-delete" onclick="return confirm('Delete {{ item.name }}?')">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="form-card">
+            <h2>➕ Add Menu Item</h2>
+            <form action="{% url 'update_menu' restaurant.id %}" method="post">
+                {% csrf_token %}
+                <label>Item Name</label>
+                <input type="text" name="name" placeholder="e.g. Margherita Pizza" required>
+                <label>Description</label>
+                <textarea name="description" placeholder="Brief description..." required></textarea>
+                <label>Price (₹)</label>
+                <input type="number" name="price" step="0.01" placeholder="199" required>
+                <label>Image URL</label>
+                <input type="url" name="picture" placeholder="https://...">
+                <div class="checkbox-row">
+                    <input type="checkbox" id="vegeterian" name="vegeterian">
+                    <label for="vegeterian">Vegetarian item</label>
+                </div>
+                <button type="submit" class="btn-submit">Add Item</button>
+            </form>
+        </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <script>
+        function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙'; }
+        function toggleTheme() { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; localStorage.setItem('mb-theme', t); applyTheme(t); }
+        applyTheme(localStorage.getItem('mb-theme') || 'light');
+    </script>
+</body>
+</html>

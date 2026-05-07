@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed – MealMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'delivery/theme.css' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; min-height: 100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+        .card { background: var(--surface); border-radius: 20px; padding: 50px 40px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 10px 40px var(--shadow-lg); }
+        .icon { font-size: 4rem; margin-bottom: 16px; }
+        h1 { font-size: 1.6rem; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+        .address-box { background: var(--surface2); border-radius: 10px; padding: 16px 20px; margin: 20px 0; text-align: left; }
+        .address-box .label { font-size: 0.8rem; font-weight: 600; color: var(--orange); margin-bottom: 6px; }
+        .address-box p { font-size: 0.9rem; color: var(--text-primary); }
+        .note { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 28px; }
+        .btn-back { display: inline-block; padding: 12px 30px; background: var(--orange); color: #fff; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: background 0.2s; }
+        .btn-back:hover { background: var(--orange-dark); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">🎉</div>
+        <h1>Order Confirmed, {{ username }}!</h1>
+        <div class="address-box">
+            <p class="label">DELIVERY ADDRESS</p>
+            <p>{{ customer.address }}</p>
+        </div>
+        <p class="note">Your order will be delivered shortly. Thank you for choosing MealMate!</p>
+        {% if cart_items %}
+            <a href="{% url 'customer_menu' cart_items.0.restaurant.id username %}" class="btn-back">Back to Restaurants</a>
+        {% else %}
+            <a href="/" class="btn-back">Back to Home</a>
+        {% endif %}
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <script>
+        function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙'; }
+        function toggleTheme() { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; localStorage.setItem('mb-theme', t); applyTheme(t); }
+        applyTheme(localStorage.getItem('mb-theme') || 'light');
+    </script>
+</body>
+</html>
